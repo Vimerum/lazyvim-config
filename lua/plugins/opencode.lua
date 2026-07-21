@@ -38,7 +38,7 @@ return {
     vim.keymap.set({ "n", "x" }, "<C-a>", function()
       require("opencode").ask("@this: ", { submit = true })
     end, { desc = "Ask opencode…" })
-    vim.keymap.set({ "n", "x" }, "<C-x>", function()
+    vim.keymap.set({ "n", "x" }, "<C-z>", function()
       require("opencode").select()
     end, { desc = "Select opencode…" })
     vim.keymap.set({ "n", "t" }, "<C-.>", function()

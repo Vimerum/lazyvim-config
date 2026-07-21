@@ -1,6 +1,17 @@
 vim.g.lazyvim_ts_lsp = "tsgo"
-vim.diagnostic.config({
-  virtual_text = false,
+vim.opt.relativenumber = false
+vim.g.maplocalleader = ","
+vim.opt.swapfile = false
+vim.opt.undofile = true
+vim.opt.autoread = true
+
+vim.filetype.add({
+  filename = {
+    ["Jenkinsfile"] = "groovy",
+  },
+  pattern = {
+    [".*Jenkinsfile.*"] = "groovy",
+  },
 })
 
 return {
