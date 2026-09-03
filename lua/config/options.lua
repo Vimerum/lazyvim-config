@@ -4,6 +4,7 @@ vim.g.maplocalleader = ","
 vim.opt.swapfile = false
 vim.opt.undofile = true
 vim.opt.autoread = true
+vim.lsp.document_color.enable(false)
 
 vim.filetype.add({
   filename = {

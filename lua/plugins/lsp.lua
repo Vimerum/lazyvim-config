@@ -28,6 +28,38 @@ return {
       })
 
       merge_server(opts, "tsgo", {
+        on_init = function(client)
+          local original_request = client.request
+          client.request = function(method, params, handler, bufnr)
+            if method == "textDocument/completion" and params and params.context then
+              if params.context.triggerKind == 2 then -- TriggerCharacter
+                local trigger_char = params.context.triggerCharacter
+                local server_triggers = {}
+                if client.server_capabilities and client.server_capabilities.completionProvider then
+                  server_triggers = client.server_capabilities.completionProvider.triggerCharacters or {}
+                end
+
+                -- Verify if the trigger character is supported by tsgo
+                local is_valid = false
+                for _, char in ipairs(server_triggers) do
+                  if char == trigger_char then
+                    is_valid = true
+                    break
+                  end
+                end
+
+                -- Fall back to "Invoked" trigger kind if the character is not supported,
+                -- preventing the language server from panicking.
+                if not is_valid then
+                  params.context = {
+                    triggerKind = 1, -- Invoked
+                  }
+                end
+              end
+            end
+            return original_request(method, params, handler, bufnr)
+          end
+        end,
         filetypes = {
           "javascript",
           "javascriptreact",
