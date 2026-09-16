@@ -92,6 +92,13 @@ return {
       edit = "", -- Custom command handles editing via the e key override
     }
 
+    -- 3. Show files in Find files
+    opts.picker.sources = opts.picker.sources or {}
+    opts.picker.sources.files = {
+      hidden = true,
+      ignored = true,
+    }
+
     return opts
   end,
 }
