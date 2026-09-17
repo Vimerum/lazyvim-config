@@ -132,3 +132,6 @@ vim.keymap.set("c", "<CR>", function()
   end
   return "<CR>"
 end, { expr = true, desc = "Smart quit on :q" })
+
+-- Exit terminal mode with double Esc
+vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
