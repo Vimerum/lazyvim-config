@@ -97,6 +97,10 @@ return {
     opts.picker.sources.files = {
       hidden = true,
       ignored = true,
+      exclude = {
+        "node_modules",
+        "dist",
+      },
     }
 
     return opts
