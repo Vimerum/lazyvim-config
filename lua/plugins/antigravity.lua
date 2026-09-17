@@ -6,7 +6,7 @@ return {
   },
   opts = {
     -- Path to the antigravity CLI binary
-    command = "agy",
+    command = "agy --mode plan",
 
     terminal = {
       -- "native" (standard split), "float" (Neovim floating window), or "snacks" (snacks.nvim terminal)
