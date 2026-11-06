@@ -38,20 +38,20 @@ return {
     },
   },
   keys = {
-    { "<leader>a", nil, desc = "AI/Antigravity" },
-    { "<leader>ac", "<cmd>Antigravity<cr>", desc = "Toggle Antigravity" },
-    { "<leader>ar", "<cmd>AntigravityResume<cr>", desc = "Resume Antigravity" },
-    { "<leader>am", "<cmd>AntigravitySelectModel<cr>", desc = "Select Antigravity model" },
-    { "<leader>aa", "<cmd>AntigravityAsk<cr>", desc = "Ask Antigravity", mode = { "n", "v" } },
+    { "<leader>at", nil, desc = "AI/Antigravity" },
+    { "<leader>atc", "<cmd>Antigravity<cr>", desc = "Toggle Antigravity" },
+    { "<leader>atr", "<cmd>AntigravityResume<cr>", desc = "Resume Antigravity" },
+    { "<leader>atm", "<cmd>AntigravitySelectModel<cr>", desc = "Select Antigravity model" },
+    { "<leader>ata", "<cmd>AntigravityAsk<cr>", desc = "Ask Antigravity", mode = { "n", "v" } },
     {
-      "<leader>ab",
+      "<leader>atb",
       function()
         require("antigravity-cli.integrations").add_to_context(vim.api.nvim_buf_get_name(0))
       end,
       desc = "Add current buffer to Antigravity context",
     },
     -- Diff management (when in a (proposed) buffer)
-    { "<leader>ay", "<cmd>AntigravityDiffAccept<cr>", desc = "Accept diff" },
-    { "<leader>an", "<cmd>AntigravityDiffDeny<cr>", desc = "Deny diff" },
+    { "<leader>aty", "<cmd>AntigravityDiffAccept<cr>", desc = "Accept diff" },
+    { "<leader>atn", "<cmd>AntigravityDiffDeny<cr>", desc = "Deny diff" },
   },
 }
