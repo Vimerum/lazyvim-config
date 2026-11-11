@@ -13,6 +13,21 @@ customCommands:
     description: "Edit commit file in Neovim"
     command: 'nvim --server "$NVIM" --remote-send "<cmd>lua _G.lazygit_edit([[{{.SelectedCommitFile.Name}}]])<CR>"'
     subprocess: false
+  - key: "D"
+    context: "files"
+    description: "Open selected file/folder in CodeDiff"
+    command: 'nvim --server "$NVIM" --remote-send "<cmd>lua _G.lazygit_codediff([[files]], [[$(git rev-parse --show-toplevel)]], [[{{.SelectedPath}}]])<CR>"'
+    subprocess: false
+  - key: "D"
+    context: "commits"
+    description: "Open commit in CodeDiff"
+    command: 'nvim --server "$NVIM" --remote-send "<cmd>lua _G.lazygit_codediff([[commit]], [[$(git rev-parse --show-toplevel)]], [[{{.SelectedCommit.Hash}}]])<CR>"'
+    subprocess: false
+  - key: "D"
+    context: "localBranches"
+    description: "Open changes since branch in CodeDiff"
+    command: 'nvim --server "$NVIM" --remote-send "<cmd>lua _G.lazygit_codediff([[branch]], [[$(git rev-parse --show-toplevel)]], [[{{.SelectedLocalBranch.Name}}]])<CR>"'
+    subprocess: false
 ]=]
 
 local f = io.open(custom_config_path, "w")
@@ -29,6 +44,14 @@ end
 table.insert(files, custom_config_path)
 
 vim.env.LG_CONFIG_FILE = table.concat(files, ",")
+
+local function hide_terminals()
+  for _, t in ipairs(require("snacks").terminal.list()) do
+    if t:valid() then
+      t:hide()
+    end
+  end
+end
 
 _G.lazygit_edit = function(filename, line)
   local main_win = nil
@@ -61,11 +84,35 @@ _G.lazygit_edit = function(filename, line)
     end
   end
 
-  for _, t in ipairs(require("snacks").terminal.list()) do
-    if t:valid() then
-      t:hide()
+  hide_terminals()
+end
+
+-- Árvore vazia do Git: serve de "pai" para o commit raiz.
+local EMPTY_TREE = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+
+-- Chamado pela tecla D do lazygit: abre o item selecionado no CodeDiff.
+_G.lazygit_codediff = function(kind, root, target)
+  local args = { "--repo", vim.fn.fnameescape(root) }
+  if kind == "files" then
+    -- Restringe o diff ao arquivo ou pasta selecionado.
+    if target ~= "" then
+      vim.list_extend(args, { "--", vim.fn.fnameescape(target) })
     end
+  elseif kind == "commit" then
+    local parent = target .. "~"
+    local has_parent = vim.system({ "git", "-C", root, "rev-parse", "--verify", "--quiet", parent }):wait().code == 0
+    vim.list_extend(args, { has_parent and parent or EMPTY_TREE, target })
+  elseif kind == "branch" then
+    table.insert(args, target .. "...")
   end
+
+  hide_terminals()
+  vim.schedule(function()
+    local ok, err = pcall(vim.cmd, "CodeDiff " .. table.concat(args, " "))
+    if not ok then
+      vim.notify(tostring(err), vim.log.levels.ERROR)
+    end
+  end)
 end
 
 return {

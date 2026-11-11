@@ -278,12 +278,12 @@ local function patch_octo_file_panel_tree()
     line_idx = line_idx + 1
 
     local showing = "Showing changes for:"
-    add_hl("DiffviewFilePanelTitle", line_idx, 0, #showing)
+    add_hl("OctoFilePanelTitle", line_idx, 0, #showing)
     table.insert(lines, showing)
     line_idx = line_idx + 1
 
     local range = left:abbrev() .. ".." .. right:abbrev()
-    add_hl("DiffviewFilePanelPath", line_idx, 0, #range)
+    add_hl("OctoFilePanelPath", line_idx, 0, #range)
     table.insert(lines, range)
   end
 

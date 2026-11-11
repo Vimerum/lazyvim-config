@@ -144,7 +144,23 @@ Configuração pessoal do Neovim baseada no [LazyVim](https://www.lazyvim.org/).
 - Assinatura de função (signature help) **desativada**
 - Keymaps de navegação: `<C-j>` / `<C-k>` para navegar, `<CR>` para aceitar
 
-### [`diffview.nvim`](https://github.com/sindrets/diffview.nvim) — Visualizador de diffs Git
+### [`codediff.nvim`](https://github.com/esmuellert/codediff.nvim) — Diff Git estilo VS Code
+
+- `<leader>gd` (`Espaço g d`) ou `:GitDiff` abre a visualização numa aba própria, com árvore de arquivos e diff lado a lado.
+- Reutiliza a aba de diff de cada repositório em vez de abrir outra.
+- Compacta pastas com um único subdiretório em uma linha, como `apps/back/src/app`.
+- Scroll vertical e horizontal sincronizado entre os dois lados do diff.
+- Atualiza as alterações automaticamente e mostra arquivos staged, unstaged e novos.
+- `]c` / `<leader>hh` vai para o próximo hunk e `[c` / `<leader>hp` para o anterior. `<leader>hh` e `<leader>hp` também funcionam nos buffers normais, via GitSigns.
+- `q` fecha a visualização; use `:GitDiff` para reabrir.
+- `:CodeDiff` também está disponível para comparações avulsas (por exemplo `:CodeDiff history`).
+- No LazyGit, `D` abre o item selecionado no CodeDiff: arquivo ou pasta (painel de arquivos), commit (painel de commits) ou as mudanças desde a branch (painel de branches).
+- `diffview.nvim` permanece desativado, e os atalhos `<leader>gD`, `<leader>ghd` e `<leader>ghD` foram removidos.
+
+### [`neogit`](https://github.com/NeogitOrg/neogit) — Git status
+
+- `<leader>go` (`Espaço g o`) ou `:Neogit` abre o status do Git; os diffs usam o CodeDiff.
+- `<leader>gF` (`Espaço g F`, com `F` maiúsculo) executa `git fetch origin` no diretório atual.
 
 ### [`vim-flog`](https://github.com/rbong/vim-flog) — Log visual do Git
 
