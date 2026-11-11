@@ -8,6 +8,9 @@ local motions = {
   ["<ScrollWheelDown>"] = { key = "<C-e>", axis = "ver" },
   ["<ScrollWheelLeft>"] = { key = "zh", axis = "hor" },
   ["<ScrollWheelRight>"] = { key = "zl", axis = "hor" },
+  -- Shift + roda do mouse rola na horizontal, em qualquer janela.
+  ["<S-ScrollWheelUp>"] = { key = "zh", axis = "hor", fallback = "<ScrollWheelLeft>" },
+  ["<S-ScrollWheelDown>"] = { key = "zl", axis = "hor", fallback = "<ScrollWheelRight>" },
 }
 
 local function step(axis)
@@ -32,17 +35,30 @@ function M.apply(wheel, target)
   if not vim.api.nvim_win_is_valid(win) then
     return
   end
-  vim.api.nvim_win_call(win, function()
+  local leftcol = vim.api.nvim_win_call(win, function()
     vim.cmd("normal! " .. count .. vim.api.nvim_replace_termcodes(motion.key, true, false, true))
+    return vim.fn.winsaveview().leftcol
   end)
+  if motion.axis ~= "hor" then
+    return
+  end
+  -- Na horizontal o scrollbind nativo nem sempre propaga a partir de uma
+  -- janela que não é a atual; iguala a coluna das demais explicitamente.
+  for _, other in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if other ~= win and vim.wo[other].scrollbind then
+      vim.api.nvim_win_call(other, function()
+        vim.fn.winrestview({ leftcol = leftcol })
+      end)
+    end
+  end
 end
 
 function M.setup()
-  for wheel in pairs(motions) do
+  for wheel, motion in pairs(motions) do
     vim.keymap.set("n", wheel, function()
       local target = vim.fn.getmousepos().winid
       if target == 0 or target == vim.api.nvim_get_current_win() or not vim.wo[target].scrollbind then
-        return wheel
+        return motion.fallback or wheel
       end
       return ("<Cmd>lua require('config.scrollbind-mouse').apply('%s', %d)<CR>"):format(wheel:gsub("<", "<lt>"), target)
     end, { expr = true, desc = "Scroll sincronizado em janelas com scrollbind" })
