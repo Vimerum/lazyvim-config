@@ -7,6 +7,7 @@ return {
     vim.opt.scrollopt:append({ "ver", "hor", "jump" })
     require("config.git-diff").setup()
     require("config.scrollbind-mouse").setup()
+    require("config.codediff-panes").setup()
   end,
   opts = {
     diff = {
